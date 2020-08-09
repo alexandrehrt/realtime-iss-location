@@ -1,0 +1,39 @@
+body {
+  background-image: linear-gradient(to right, black, grey);
+}
+
+* {
+  color: white;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.map {
+  border-top: 1px solid black;
+  padding: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+h1 {
+  text-align: center;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  border-bottom: 1px solid rgb(207, 204, 204);
+}
+
+#mapid {
+  height: 580px;
+  width: 780px;
+  margin-right: 20px;
+}

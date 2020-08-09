@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
+  <link rel="stylesheet" href="styles.css"/>>
+  <title>Real-Time ISS location</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Real-time ISS location</h1>
+    <div class="map">
+      <div id="mapid"></div>
+
+      <ul>
+        <li><p><strong>Latitude:</strong> <span id="lat"></span>°</p></li>
+        <li><p><strong>Longitude:</strong> <span id="lon"></span>°</p></li>
+        <li><p><strong>Altitude:</strong> <span id="alt"></span> km</p></li>
+        <li><p><strong>Velocity:</strong> <span id="vel"></span> km/h</p></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let mymap = L.map('mapid').setView([0, 0], 1);
+
+    const attribution = '&copy; <a href="https://www.openstreemap.org/copyright">OpenStreeMap</a> contributors';
+    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    const tiles = L.tileLayer(tileUrl, { attribution });
+    tiles.addTo(mymap);
+
+      // Making a marker with a custom icon
+      const issIcon = L.icon({
+        iconUrl: 'iss.png',
+        iconSize: [50, 32],
+        iconAnchor: [25, 16]
+      });
+
+      const marker = L.marker([0, 0], { icon: issIcon }).addTo(mymap);
+
+
+    const iss_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+
+    async function issLocation() {
+      const response = await fetch(iss_url);
+      const data = await response.json();
+      const { latitude, longitude, altitude, velocity } = data;
+
+      
+      // Marker
+      marker.setLatLng([latitude, longitude]);
+      // Marker always centered
+      mymap.setView([latitude, longitude]);
+
+
+      document.getElementById('lat').innerHTML = latitude.toFixed(2);
+      document.getElementById('lon').innerHTML = longitude.toFixed(2);
+      document.getElementById('alt').innerHTML = altitude.toFixed(2);
+      document.getElementById('vel').innerHTML = velocity.toFixed(2);
+    }
+
+    issLocation();
+
+    setInterval(issLocation, 1000);
+
+  </script>
+</body>
+</html>
